@@ -37,14 +37,35 @@ func ParseTodos(f *os.File) ([]Todo, error) {
 	todos := make([]Todo, 0)
 	scanner := bufio.NewScanner(f)
 	offset := int64(0)
+	lineEnding := 1
+	crlf, err := isCRLF(f)
+	if err != nil {
+		return todos, err
+	}
+	if crlf {
+		lineEnding = 2
+	}
+	_, err = f.Seek(0, 0)
+	if err != nil {
+		return todos, err
+	}
 	for scanner.Scan() {
 		line := scanner.Text()
 		if todo, ok := ParseTodo(line, offset); ok {
 			todos = append(todos, todo)
 		}
-		offset += int64(len(line) + 1)
+		offset += int64(len(line) + lineEnding)
 	}
 	return todos, nil
+}
+
+func isCRLF(f *os.File) (bool, error) {
+	reader := bufio.NewReader(f)
+	line, err := reader.ReadBytes('\n')
+	if err != nil {
+		return false, err
+	}
+	return len(line) > 1 && line[len(line)-2] == '\r' && line[len(line)-1] == '\n', nil
 }
 
 func ParseTodo(line string, offset int64) (Todo, bool) {
