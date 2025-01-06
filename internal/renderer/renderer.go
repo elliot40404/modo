@@ -2,6 +2,7 @@ package renderer
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -9,29 +10,44 @@ import (
 	"github.com/elliot40404/modo/internal/parser"
 )
 
+type Renderer struct {
+	List []parser.Todo
+	File *os.File
+}
+
 type Model struct {
-	fd       *os.File
-	choices  []parser.Todo
+	Renderer
 	cursor   int
 	selected map[int]struct{}
 }
 
-func (m Model) Init() tea.Cmd {
-	return nil
+func NewRenderer(list []parser.Todo, file *os.File) *Renderer {
+	return &Renderer{
+		List: list,
+		File: file,
+	}
 }
 
-func InitialModel(todos []parser.Todo, fd *os.File) Model {
+func (r Renderer) Render() {
 	selected := make(map[int]struct{})
-	for i, todo := range todos {
+	for i, todo := range r.List {
 		if todo.Done {
 			selected[i] = struct{}{}
 		}
 	}
-	return Model{
-		choices:  todos,
+	model := Model{
+		Renderer: r,
 		selected: selected,
-		fd:       fd,
 	}
+	p := tea.NewProgram(model, tea.WithAltScreen())
+	_, err := p.Run()
+	if err != nil {
+		slog.Error("something went wrong", "error", err)
+	}
+}
+
+func (m Model) Init() tea.Cmd {
+	return nil
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -44,12 +60,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.cursor--
 			}
 		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
+			if m.cursor < len(m.List)-1 {
 				m.cursor++
 			}
 		case "enter", " ":
 			_, ok := m.selected[m.cursor]
-			m.choices[m.cursor].ToggleChecked(m.fd)
+			m.List[m.cursor].ToggleChecked(m.File)
 			if ok {
 				delete(m.selected, m.cursor)
 			} else {
@@ -62,7 +78,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	s := ""
-	for i, choice := range m.choices {
+	for i, choice := range m.List {
 		cursor := " "
 		if m.cursor == i {
 			cursor = ">"

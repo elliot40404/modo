@@ -3,8 +3,6 @@ package main
 import (
 	"log/slog"
 
-	tea "github.com/charmbracelet/bubbletea"
-
 	"github.com/elliot40404/modo/internal/cli"
 	"github.com/elliot40404/modo/internal/parser"
 	"github.com/elliot40404/modo/internal/renderer"
@@ -21,10 +19,9 @@ func main() {
 	if err != nil {
 		slog.Error("something went wrong", "error", err)
 	}
-	p := tea.NewProgram(renderer.InitialModel(todos, f))
-	_, err = p.Run()
-	if err != nil {
-		slog.Error("something went wrong", "error", err)
+	if len(todos) == 0 {
+		slog.Error("no todos found")
 		return
 	}
+	renderer.NewRenderer(todos, f).Render()
 }
