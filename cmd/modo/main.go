@@ -6,8 +6,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/elliot40404/modo/internal/cli"
+	"github.com/elliot40404/modo/internal/parser"
 	"github.com/elliot40404/modo/internal/renderer"
-	"github.com/elliot40404/modo/internal/todo"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 		return
 	}
 	defer f.Close()
-	todos, err := todo.ParseTodos(f)
+	todos, err := parser.ParseTodos(f)
 	if err != nil {
 		slog.Error("something went wrong", "error", err)
 	}

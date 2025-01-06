@@ -6,12 +6,12 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/elliot40404/modo/internal/todo"
+	"github.com/elliot40404/modo/internal/parser"
 )
 
 type Model struct {
 	fd       *os.File
-	choices  []todo.Todo
+	choices  []parser.Todo
 	cursor   int
 	selected map[int]struct{}
 }
@@ -20,7 +20,7 @@ func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-func InitialModel(todos []todo.Todo, fd *os.File) Model {
+func InitialModel(todos []parser.Todo, fd *os.File) Model {
 	selected := make(map[int]struct{})
 	for i, todo := range todos {
 		if todo.Done {

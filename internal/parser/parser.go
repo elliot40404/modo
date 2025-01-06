@@ -1,4 +1,4 @@
-package todo
+package parser
 
 import (
 	"bufio"
