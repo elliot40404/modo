@@ -9,7 +9,7 @@ I usually write my notes in markdown format and I like lists.
 ## Installation
 
 ```bash
-go install github.com/elliot40404/modo@latest
+go install github.com/elliot40404/modo/cmd/modo@latest
 ```
 
 ## Usage 
