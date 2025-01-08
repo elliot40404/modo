@@ -24,6 +24,9 @@ clean:
 lint:
     golangci-lint run
 
+lint-fix:
+    golangci-lint run --fix
+
 vendor:
     go mod tidy
     go mod vendor
