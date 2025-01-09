@@ -1,6 +1,7 @@
 package renderer
 
 import (
+	"errors"
 	"log/slog"
 	"os"
 
@@ -41,7 +42,7 @@ func (r Renderer) Render() {
 		WithKeyMap(keymap).
 		Run()
 	if err != nil {
-		if err == huh.ErrUserAborted {
+		if errors.Is(err, huh.ErrUserAborted) {
 			return
 		}
 		slog.Error("something went wrong", "error", err)
