@@ -27,7 +27,9 @@ func (r Renderer) Render() {
 		options = append(options, huh.NewOption(todo.Content, i).Selected(todo.Done))
 	}
 	out := make([]int, 0, len(r.List))
-	form := huh.NewForm(
+	keymap := huh.NewDefaultKeyMap()
+	keymap.Quit.SetKeys("q", "ctrl+c")
+	err := huh.NewForm(
 		huh.NewGroup(huh.NewMultiSelect[int]().
 			Title("Todos").
 			Options(
@@ -35,13 +37,20 @@ func (r Renderer) Render() {
 			).
 			Height(10).
 			Value(&out)),
-	)
-	err := form.Run()
+	).
+		WithKeyMap(keymap).
+		Run()
 	if err != nil {
+		if err == huh.ErrUserAborted {
+			return
+		}
 		slog.Error("something went wrong", "error", err)
 		return
 	}
 	for _, i := range out {
-		r.List[i].ToggleChecked(r.File)
+		todo := r.List[i]
+		if !todo.Done {
+			r.List[i].ToggleChecked(r.File)
+		}
 	}
 }
