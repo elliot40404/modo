@@ -10,25 +10,23 @@ import (
 )
 
 type Renderer struct {
-	List     []parser.Todo
-	File     *os.File
-	Selected []int
+	List []parser.Todo
+	File *os.File
 }
 
 func NewRenderer(list []parser.Todo, file *os.File) *Renderer {
 	return &Renderer{
-		List:     list,
-		File:     file,
-		Selected: make([]int, 0),
+		List: list,
+		File: file,
 	}
 }
 
 func (r Renderer) Render() {
-	options := make([]huh.Option[int], len(r.List))
+	options := make([]huh.Option[int], 0, len(r.List))
 	for i, todo := range r.List {
 		options = append(options, huh.NewOption(todo.Content, i).Selected(todo.Done))
 	}
-	out := make([]int, 0)
+	out := make([]int, 0, len(r.List))
 	form := huh.NewForm(
 		huh.NewGroup(huh.NewMultiSelect[int]().
 			Title("Todos").
