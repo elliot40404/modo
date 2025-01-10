@@ -1,4 +1,5 @@
 # MODO
+<img src="./images/modo.gif" alt="modo.gif"></img>
 
 > Modo is a simple cli app that lets you interact any text file that contains checkboxes in the markdown format.
 
