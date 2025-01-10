@@ -24,8 +24,12 @@ func NewRenderer(list []parser.Todo, file *os.File) *Renderer {
 
 func (r Renderer) Render() {
 	options := make([]huh.Option[int], 0, len(r.List))
+	preselected := make([]int, 0, len(r.List))
 	for i, todo := range r.List {
 		options = append(options, huh.NewOption(todo.Content, i).Selected(todo.Done))
+		if todo.Done {
+			preselected = append(preselected, i)
+		}
 	}
 	out := make([]int, 0, len(r.List))
 	keymap := huh.NewDefaultKeyMap()
@@ -51,6 +55,12 @@ func (r Renderer) Render() {
 	for _, i := range out {
 		todo := r.List[i]
 		if !todo.Done {
+			r.List[i].ToggleChecked(r.File)
+		}
+	}
+	for _, i := range preselected {
+		todo := r.List[i]
+		if todo.Done {
 			r.List[i].ToggleChecked(r.File)
 		}
 	}
