@@ -27,7 +27,7 @@ func help() {
 %s
 
 Usage:
-  %s %s
+  %s
 
 Options:
   -h, --help    Show this help message
@@ -35,7 +35,7 @@ Options:
 
 Examples:
   %s
-`, Name, Version, Desc, Name, Example, Example)
+`, Name, Version, Desc, Example, Example)
 }
 
 func ParseArgs() (*os.File, error) {
