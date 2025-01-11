@@ -52,15 +52,16 @@ func (r Renderer) Render() {
 		slog.Error("something went wrong", "error", err)
 		return
 	}
+	done := make(map[int]struct{})
 	for _, i := range out {
+		done[i] = struct{}{}
 		todo := r.List[i]
 		if !todo.Done {
-			r.List[i].ToggleChecked(r.File)
+			todo.ToggleChecked(r.File)
 		}
 	}
 	for _, i := range preselected {
-		todo := r.List[i]
-		if todo.Done {
+		if _, ok := done[i]; !ok {
 			r.List[i].ToggleChecked(r.File)
 		}
 	}

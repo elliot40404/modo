@@ -14,7 +14,7 @@ var (
 )
 
 const (
-	Version = "0.0.5"
+	Version = "0.0.6"
 	Author  = "elliot40404<avishek40404@gmail.com>"
 	Name    = "modo"
 	Desc    = "Modo is a simple cli app that lets you interact any text file that contains checkboxes in the markdown format."
