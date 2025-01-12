@@ -15,7 +15,12 @@ func main() {
 		return
 	}
 	defer f.Close()
-	todos, err := parser.ParseTodos(f)
+	lineEndingLen, err := parser.GetLineEndingLen(f)
+	if err != nil {
+		slog.Error("something went wrong", "error", err)
+		return
+	}
+	todos, err := parser.ParseTodos(f, lineEndingLen)
 	if err != nil {
 		slog.Error("something went wrong", "error", err)
 	}
